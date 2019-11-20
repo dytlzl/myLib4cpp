@@ -1,7 +1,7 @@
 template<typename T>
 struct LazySegmentTree {
 private:
-    int n;
+    int size;
     T initialNode;
     T initialLazy;
     vector<T> node;
@@ -13,15 +13,15 @@ private:
 
 public:
     LazySegmentTree(const vector<T> &a, const T _initialNode, const T _initialLazy, const string &method) {
-        n = 1;
+        size = 1;
         initialNode = _initialNode;
         initialLazy = _initialLazy;
 
-        int size = a.size();
-        while (n < size) n *= 2;
+        int _size = a.size();
+        while (size < _size) size *= 2;
 
-        node.resize(2 * n, initialNode);
-        lazy.resize(2 * n, initialLazy);
+        node.resize(2 * size, initialNode);
+        lazy.resize(2 * size, initialLazy);
 
         if (method == "sum") {
             evalFunc = [](T &_a, const T _b) {
@@ -61,8 +61,8 @@ public:
                 return min(_a, _b);
             };
         }
-        for (int i = 0; i < size; i++) node[i + n - 1] = a[i];
-        for (int i = n - 2; i >= 0; i--) node[i] = getFunc(node[i * 2 + 1], node[i * 2 + 2]);
+        for (int i = 0; i < size; i++) node[i + size - 1] = a[i];
+        for (int i = size - 2; i >= 0; i--) node[i] = getFunc(node[i * 2 + 1], node[i * 2 + 2]);
     }
 
     void eval(int k, int l, int r) {
@@ -77,7 +77,7 @@ public:
     }
 
     void update(int a, int b, T x, int k = 0, int l = 0, int r = -1) {
-        if (r < 0) r = n;
+        if (r < 0) r = size;
         eval(k, l, r);
         if (r <= a || b <= l) return;
         if (a <= l && r <= b) {
@@ -91,7 +91,7 @@ public:
     }
 
     T getRange(int a, int b, int k = 0, int l = 0, int r = -1) {
-        if (r < 0) r = n;
+        if (r < 0) r = size;
         eval(k, l, r);
         if (r <= a || b <= l) return initialNode;
         if (a <= l && r <= b) return node[k];
