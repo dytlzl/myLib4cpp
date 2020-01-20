@@ -14,10 +14,9 @@ struct Sieve {
 
     vector<pair<int, int> > factorize(int n) {
         vector<pair<int, int> > res;
-        if (vec[n] != 0) {
-            res.emplace_back(vec[n], 1);
-            n /= vec[n];
-        }
+        if (vec[n] == 0) return res;
+        res.emplace_back(vec[n], 1);
+        n /= vec[n];
         while (vec[n] != 0) {
             if (vec[n] == res.back().first) {
                 ++res.back().second;
